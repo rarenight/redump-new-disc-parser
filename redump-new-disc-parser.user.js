@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Redump New Disc Form Parser
 // @namespace    http://tampermonkey.net/
-// @version      1.6
+// @version      1.7
 // @description  Tampermonkey userscript that auto-inputs MPF output (the values in !submissionInfo.txt) into Redump's New Disc form
 // @author       rarenight
 // @match        http://redump.org/newdisc/*
@@ -39,10 +39,13 @@
         commonInfo.d_date = (input.match(/EXE\/Build Date: (.+)/) || [])[1];
         subInfo.extras.d_pvd = (input.match(/Primary Volume Descriptor \(PVD\):\n\n((\d{4} : .+\n)+)/) || [])[1];
 
-        let versionSection = input.split('Version and Editions:')[1];
-        if (versionSection) {
-            subInfo.versions_and_editions.d_version = (versionSection.match(/Version: (.+)/) || [])[1];
+        const versionAndEditionsSection = input.match(/Version and Editions:\s*\n\s*Version: (.+)/);
+        if (versionAndEditionsSection && versionAndEditionsSection.length > 1) {
+            subInfo.versions_and_editions.d_version = versionAndEditionsSection[1];
+        } else {
+        subInfo.versions_and_editions.d_version = "";
         }
+
         let ringCodeRegex = /Ringcode Information:\n([\s\S]*?)(?=\n\tBarcode:|\n\n)/;
         let ringCodeMatch = input.match(ringCodeRegex);
         let ringInfo = ringCodeMatch ? ringCodeMatch[1].trim() : '';
