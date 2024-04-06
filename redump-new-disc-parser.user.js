@@ -37,7 +37,7 @@
         commonInfo.d_serial = (input.match(/Disc Serial: (.+)/) || [])[1];
         commonInfo.d_barcode = (input.match(/Barcode: (.+)/) || [])[1];
         commonInfo.d_date = (input.match(/EXE\/Build Date: (.+)/) || [])[1];
-        subInfo.versions_and_editions.d_version = (input.match(/Version: (.+)/) || [])[1];
+        subInfo.versions_and_editions.d_version = (input.match(/Version: (.*?)\n(?=Edition\/Release:)/s) || [])[1];
         subInfo.extras.d_pvd = (input.match(/Primary Volume Descriptor \(PVD\):\n\n((\d{4} : .+\n)+)/) || [])[1];
 
         let ringCodeRegex = /Ringcode Information:\n([\s\S]*?)(?=\n\tBarcode:|\n\n)/;
